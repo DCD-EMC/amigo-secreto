@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amigo Secreto · Lista de Deseos</title>
+  <meta name="description" content="La lista de deseos del amigo secreto: fotos, tiendas y enlaces de lo que cada quien quiere recibir esta Navidad.">
+  <meta property="og:title" content="Amigo Secreto · Lista de Deseos">
+  <meta property="og:description" content="Mirá lo que cada quien quiere recibir esta Navidad.">
+  <meta name="theme-color" content="#0f4c3a">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#catalogo">Saltar a los regalos</a>
+
+  <div class="announce" id="announce">
+    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18" /></svg>
+    <span id="announceText">Intercambio de regalos</span>
+  </div>
+
+  <header class="nav" id="top">
+    <div class="container nav-inner">
+      <a class="brand" href="#todos" aria-label="Inicio">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path d="M16 3v26M4.7 9.5l22.6 13M27.3 9.5L4.7 22.5"/>
+            <path d="M12.5 5.5L16 8.5l3.5-3M12.5 26.5L16 23.5l3.5 3"/>
+          </g>
+        </svg>
+        <span class="brand-text"><span id="brandTitle">Amigo Secreto</span><em id="brandSub">Navidad 2026</em></span>
+      </a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#todos">Inicio</a>
+        <details class="dropdown" id="navDropdown">
+          <summary>Listas <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="dropdown-menu" id="navPeople"></div>
+        </details>
+        <a href="#como-funciona">Cómo funciona</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="searchBtn" type="button" aria-label="Buscar regalos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+        <button class="btn btn-dark" id="addBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Agregar deseo</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="demo-bar" id="demoBar" hidden>
+    <div class="container">
+      <strong>Modo demostración.</strong> Los regalos solo se guardan en este navegador. Pegá la URL de Apps Script en <code>assets/js/config.js</code> para compartirlos con todo el grupo.
+    </div>
+  </div>
+
+  <main>
+    <!-- Portada -->
+    <section class="hero-wrap container" aria-label="Destacados">
+      <div class="hero" id="hero" aria-roledescription="carrusel"></div>
+      <aside class="countdown" aria-label="Cuenta regresiva">
+        <p class="countdown-label">Faltan para el intercambio</p>
+        <div class="countdown-grid">
+          <div><b data-cd="d">--</b><span>días</span></div>
+          <div><b data-cd="h">--</b><span>horas</span></div>
+          <div><b data-cd="m">--</b><span>min</span></div>
+          <div><b data-cd="s">--</b><span>seg</span></div>
+        </div>
+        <p class="countdown-date" id="cdDate"></p>
+      </aside>
+    </section>
+
+    <!-- Colecciones -->
+    <section class="section container" id="colecciones" aria-labelledby="colTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Colecciones</p>
+          <h2 id="colTitle">Una lista para cada quien</h2>
+        </div>
+        <p class="section-note" id="progressNote"></p>
+      </div>
+      <div class="people" id="people"></div>
+    </section>
+
+    <!-- Catálogo -->
+    <section class="section container" id="catalogo" aria-labelledby="catTitle">
+      <div class="catalog-head">
+        <div>
+          <p class="eyebrow" id="catEyebrow">Todos los deseos</p>
+          <h2 id="catTitle">Lo más reciente</h2>
+          <p class="section-note" id="catNote"></p>
+        </div>
+        <div class="catalog-actions" id="catActions"></div>
+      </div>
+
+      <div class="toolbar">
+        <label class="search" for="q">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Buscar por regalo, tienda o persona" autocomplete="off">
+        </label>
+        <div class="toolbar-right">
+          <label class="select" for="sort">
+            <span class="sr-only">Ordenar</span>
+            <select id="sort">
+              <option value="recientes">Más recientes</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+              <option value="az">Nombre A–Z</option>
+            </select>
+          </label>
+          <div class="cols" role="group" aria-label="Columnas">
+            <button type="button" data-cols="2" aria-label="2 columnas">2</button>
+            <button type="button" data-cols="3" aria-label="3 columnas">3</button>
+            <button type="button" data-cols="4" aria-label="4 columnas">4</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section class="section container" id="como-funciona" aria-labelledby="howTitle">
+      <div class="how">
+        <div class="how-intro">
+          <p class="eyebrow eyebrow-light">Cómo funciona</p>
+          <h2 id="howTitle">Tu regalo ideal, <em>a un clic</em> de quien te sacó.</h2>
+        </div>
+        <ol class="how-steps">
+          <li><b>01</b><h3>Buscá tu nombre</h3><p>Tocá “Agregar deseo” y elegí tu nombre de la lista.</p></li>
+          <li><b>02</b><h3>Contá qué querés</h3><p>Subí una foto y poné la tienda, la dirección o el enlace donde se consigue.</p></li>
+          <li><b>03</b><h3>Compartí tu lista</h3><p>Cada persona tiene su propio enlace para mandarlo por WhatsApp.</p></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <p class="footer-big">Feliz <em>Navidad</em></p>
+        <p class="footer-sub" id="footerDate"></p>
+      </div>
+      <div class="footer-links">
+        <a href="#todos">Inicio</a>
+        <a href="#colecciones">Listas</a>
+        <a href="#como-funciona">Cómo funciona</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vista rápida -->
+  <div class="overlay" id="quickOverlay" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="quickTitle" id="quick"></div>
+  </div>
+
+  <!-- Formulario -->
+  <div class="overlay" id="formOverlay" hidden>
+    <form class="modal" id="giftForm" role="dialog" aria-modal="true" aria-labelledby="formTitle" novalidate>
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow" id="formEyebrow">Nuevo deseo</p>
+          <h2 id="formTitle">Agregar a la lista</h2>
+        </div>
+        <button type="button" class="icon-btn" data-close="form" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="fPersona">¿De quién es la lista?</label>
+          <select id="fPersona" required></select>
+        </div>
+        <div class="field">
+          <label for="fTitulo">¿Qué te gustaría recibir?</label>
+          <input type="text" id="fTitulo" maxlength="120" placeholder="Ej.: Taza térmica Stanley 20 oz" required>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="fPrecio">Precio aproximado <span class="hint">opcional</span></label>
+            <input type="text" id="fPrecio" maxlength="40" placeholder="₡15 000">
+          </div>
+          <div class="field">
+            <label for="fDetalles">Detalles <span class="hint">talla, color, marca</span></label>
+            <input type="text" id="fDetalles" maxlength="300" placeholder="Color verde, talla M">
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" id="fotoLabel">Foto <span class="hint">opcional · también podés pegarla</span></span>
+          <label class="drop" id="drop" for="fFoto" aria-labelledby="fotoLabel">
+            <span class="drop-preview" id="dropPreview">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg>
+            </span>
+            <span class="drop-text">
+              <strong>Elegí una foto</strong> o arrastrala aquí
+              <small>JPG, PNG o WebP. Se optimiza automáticamente.</small>
+            </span>
+          </label>
+          <input type="file" id="fFoto" accept="image/*" class="sr-only">
+          <button type="button" class="link-btn" id="removeFoto" hidden>Quitar foto</button>
+        </div>
+        <div class="field">
+          <span class="label">Dónde conseguirlo <span class="hint">tienda, centro comercial o dirección</span></span>
+          <div class="multi" id="lugares"></div>
+          <button type="button" class="link-btn" id="addLugar">+ Agregar otro lugar</button>
+        </div>
+        <div class="field">
+          <span class="label">Enlaces <span class="hint">página donde se puede comprar</span></span>
+          <div class="multi" id="links"></div>
+          <button type="button" class="link-btn" id="addLink">+ Agregar otro enlace</button>
+        </div>
+        <div class="field" id="claveField" hidden>
+          <label for="fClave">Clave del grupo</label>
+          <input type="password" id="fClave" maxlength="60" placeholder="La que compartió Miguel" autocomplete="off">
+        </div>
+        <p class="form-error" id="formError" role="alert"></p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-light" data-close="form">Cancelar</button>
+        <button type="submit" class="btn btn-dark" id="saveBtn">Guardar deseo</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Confirmar eliminar -->
+  <div class="overlay" id="confirmOverlay" hidden>
+    <div class="modal modal-small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="modal-head"><h2 id="confirmTitle">¿Eliminar este deseo?</h2></div>
+      <div class="modal-body">
+        <p id="confirmText"></p>
+        <div class="field" id="confirmClaveField" hidden>
+          <label for="confirmClave">Clave del grupo</label>
+          <input type="password" id="confirmClave" maxlength="60" autocomplete="off">
+        </div>
+        <p class="form-error" id="confirmError" role="alert"></p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-light" data-close="confirm">Cancelar</button>
+        <button type="button" class="btn btn-wine" id="confirmYes">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
