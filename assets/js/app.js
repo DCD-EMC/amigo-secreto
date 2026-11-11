@@ -424,7 +424,7 @@
     var actual = g ? Api.photoUrl(g, 400) : null;
     ponerFoto(actual, false);
     $("#fFoto").value = "";
-    $("#claveField").hidden = Api.DEMO || !!leer("as-clave", "");
+    $("#claveField").hidden = true; // solo aparece si el servidor pide clave
     $("#fClave").value = "";
     abrirOverlay("#formOverlay");
     setTimeout(function () { $("#fTitulo").focus(); }, 40);
@@ -489,7 +489,6 @@
     var malo = links.filter(function (l) { return !urlSegura(l); })[0];
     if (malo) { err.textContent = "Este enlace no es válido: " + malo; return; }
     var clave = $("#fClave").value.trim() || leer("as-clave", "");
-    if (!Api.DEMO && !clave) { $("#claveField").hidden = false; err.textContent = "Escribí la clave del grupo para guardar."; $("#fClave").focus(); return; }
 
     var persona = sel.value;
     guardar("as-persona", persona);
@@ -506,7 +505,7 @@
     var btn = $("#saveBtn"); btn.disabled = true; btn.textContent = foto && foto.base64 ? "Subiendo foto…" : "Guardando…";
     err.textContent = "";
     Api.save(gift, foto, clave).then(function (saved) {
-      if (!Api.DEMO) guardar("as-clave", clave);
+      if (!Api.DEMO && clave) guardar("as-clave", clave);
       var g = normalizar(saved || gift);
       var i = state.gifts.findIndex(function (x) { return x.id === g.id; });
       if (i >= 0) state.gifts[i] = g; else state.gifts.push(g);
@@ -530,17 +529,16 @@
     state.deleting = g;
     $("#confirmText").textContent = "Se quitará “" + g.titulo + "” de la lista de " + g.persona + ". Esta acción no se puede deshacer.";
     $("#confirmError").textContent = "";
-    $("#confirmClaveField").hidden = Api.DEMO || !!leer("as-clave", "");
+    $("#confirmClaveField").hidden = true;
     $("#confirmClave").value = "";
     abrirOverlay("#confirmOverlay");
   }
   $("#confirmYes").addEventListener("click", function () {
     var g = state.deleting; if (!g) return;
     var clave = $("#confirmClave").value.trim() || leer("as-clave", "");
-    if (!Api.DEMO && !clave) { $("#confirmClaveField").hidden = false; $("#confirmError").textContent = "Escribí la clave del grupo."; return; }
     var b = this; b.disabled = true;
     Api.remove(g.id, clave).then(function () {
-      if (!Api.DEMO) guardar("as-clave", clave);
+      if (!Api.DEMO && clave) guardar("as-clave", clave);
       state.gifts = state.gifts.filter(function (x) { return x.id !== g.id; });
       guardarCache(); renderAll(); cerrarOverlay("#confirmOverlay"); toast("Deseo eliminado");
     }, function (e) {
